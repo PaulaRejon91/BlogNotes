@@ -41,7 +41,7 @@ jobs:
     runs-on: windows-latest
     needs: build-test
     environment:
-      name: Production
+      name: Development
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write
@@ -64,5 +64,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'wa-blognotes'
-          slot-name: 'Production'
+          slot-name: 'Development'
           package: .
