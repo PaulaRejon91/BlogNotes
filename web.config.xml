@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<system.webServer>
+		<!-- Configura el manejador para la aplicación ASP.NET Core -->
+		<handlers>
+			<add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" />
+		</handlers>
+
+		<!-- Configuración específica para el módulo de ASP.NET Core -->
+		<aspNetCore processPath="dotnet" arguments=".\TuProyecto.dll" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="InProcess" />
+	</system.webServer>
+</configuration>
