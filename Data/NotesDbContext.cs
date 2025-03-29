@@ -12,7 +12,7 @@ namespace BlogNotes.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Configuraciones adicionales, por ejemplo:
+            // Additional settings
             modelBuilder.Entity<Note>().HasKey(n => n.Id);
         }
     }

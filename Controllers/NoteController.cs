@@ -9,116 +9,134 @@ namespace BlogNotes.Controllers;
 public class NoteController : ControllerBase
 {
     private readonly INoteService _noteService;
+    private readonly ILogger<NoteController> _logger;
 
-    public NoteController(INoteService noteService)
+    public NoteController(INoteService noteService, ILogger<NoteController> logger)
     {
         _noteService = noteService;
+        _logger = logger;
     }
 
-    //GET ALL NOTES
+    // GET ALL NOTES
     [HttpGet(Name = "GetAllNotes")]
     public async Task<IActionResult> GetNotes()
     {
-        ObjectResult result;
+        IActionResult result;
         try
         {
+            _logger.LogInformation("Received request to retrieve all notes.");
             var notes = await _noteService.GetAllNotesAsync();
+            _logger.LogInformation("Successfully retrieved {Count} notes.", notes?.Count() ?? 0);
             result = Ok(notes);
         }
         catch (Exception ex)
         {
-            result = BadRequest(ex);
+            _logger.LogError(ex, "Controller Error: Failed to retrieve all notes.");
+            result = StatusCode(500, "An internal server error occurred while processing your request.");
         }
-
         return result;
     }
 
-    //GET NOTE BY ID
+    // GET NOTE BY ID
     [HttpGet("{id}", Name = "GetNoteById")]
     public async Task<IActionResult> GetNoteById(Guid id)
     {
-        ActionResult result;
+        IActionResult result;
         try
         {
+            _logger.LogInformation("Received request to retrieve note with id {NoteId}.", id);
             var note = await _noteService.GetNoteByIdAsync(id);
             if (note == null)
             {
+                _logger.LogWarning("Note with id {NoteId} not found.", id);
                 result = NotFound();
             }
             else
             {
+                _logger.LogInformation("Successfully retrieved note with id {NoteId}.", id);
                 result = Ok(note);
             }
         }
         catch (Exception ex)
         {
-            result = BadRequest(ex);
+            _logger.LogError(ex, "Controller Error: Failed to retrieve note with id {NoteId}.", id);
+            result = StatusCode(500, "An internal server error occurred while processing your request.");
         }
         return result;
     }
 
-    //CREATE NOTE
+    // CREATE NOTE
     [HttpPost(Name = "PostNote")]
     public async Task<IActionResult> CreateNote([FromBody] NoteDto noteDto)
     {
-        ActionResult result;
+        IActionResult result;
         try
         {
             if (noteDto == null)
             {
-                result = BadRequest("The note is null");
+                _logger.LogWarning("CreateNote request received with null noteDto.");
+                result = BadRequest("The note is null.");
             }
             else
             {
+                _logger.LogInformation("Received request to create a new note with temporary id {NoteId}.", noteDto.Id);
                 await _noteService.CreateNoteAsync(noteDto);
-
+                _logger.LogInformation("Successfully created note with id {NoteId}.", noteDto.Id);
                 result = CreatedAtAction(nameof(GetNoteById), new { id = noteDto.Id }, noteDto);
             }
         }
         catch (Exception ex)
         {
-            result = BadRequest(ex);
+            _logger.LogError(ex, "Controller Error: Failed to create note with id {NoteId}.", noteDto?.Id);
+            result = StatusCode(500, "An internal server error occurred while processing your request.");
         }
         return result;
     }
 
-    //UPDATE NOTE
+    // UPDATE NOTE
     [HttpPut("{id}", Name = "UpdateNoteById")]
     public async Task<IActionResult> UpdateNote(Guid id, [FromBody] NoteDto noteDto)
     {
-        ActionResult result;
+        IActionResult result;
         try
         {
             if (noteDto == null || id != noteDto.Id)
             {
+                _logger.LogWarning("UpdateNote request received with mismatched ids. Route id: {RouteId}, noteDto id: {NoteDtoId}", id, noteDto?.Id);
                 result = BadRequest("The note ID does not match.");
             }
             else
             {
+                _logger.LogInformation("Received request to update note with id {NoteId}.", id);
                 await _noteService.UpdateNoteAsync(noteDto);
+                _logger.LogInformation("Successfully updated note with id {NoteId}.", id);
                 result = NoContent();
             }
         }
         catch (Exception ex)
         {
-            result = BadRequest(ex);
+            _logger.LogError(ex, "Controller Error: Failed to update note with id {NoteId}.", id);
+            result = StatusCode(500, "An internal server error occurred while processing your request.");
         }
         return result;
     }
 
-    //DELETE NOTE
+    // DELETE NOTE
     [HttpDelete("{id}", Name = "DeleteNoteById")]
     public async Task<IActionResult> DeleteNote(Guid id)
     {
-        ActionResult result;
+        IActionResult result;
         try
         {
+            _logger.LogInformation("Received request to delete note with id {NoteId}.", id);
             await _noteService.DeleteNoteAsync(id);
+            _logger.LogInformation("Successfully deleted note with id {NoteId}.", id);
             result = NoContent();
         }
         catch (Exception ex)
         {
-            result = BadRequest(ex);
+            _logger.LogError(ex, "Controller Error: Failed to delete note with id {NoteId}.", id);
+            result = StatusCode(500, "An internal server error occurred while processing your request.");
         }
         return result;
     }
