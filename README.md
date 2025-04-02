@@ -5,14 +5,14 @@ This is an API for managing a blog of notes, developed in .NET 8. The applicatio
 **FEATURES**
  - CRUD Operations: Allows to create, read, update and delete notes.
  - Data Mapping: Includes a mapper to convert entities to transfer objects (DTOs) for the frontend.
- - Database: Uses Entity Framework Core with SQL Server.
+ - Database: Uses Entity Framework Core with Azure SQL Database.
  - Automated CI/CD: Pipeline configured with GitHub Actions to compile, test and deploy the application to Azure Web Apps.
  - Interactive Documentation: Integrated Swagger to explore and test API endpoints.
 
 **TECHNOLOGIES**
  - .NET 8
  - Entity Framework Core
- - SQL Server
+ - Azure SQL Database
  - GitHub Actions
  - Swagger
 
