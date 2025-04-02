@@ -2,8 +2,6 @@
 using BlogNotes.Interfaces;
 using BlogNotes.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using static Azure.Core.HttpHeader;
 
 namespace BlogNotes.Repository
 {

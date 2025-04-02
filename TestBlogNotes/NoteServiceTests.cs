@@ -24,7 +24,7 @@ namespace BlogNotes.Tests.Services
         [Test]
         public async Task CreateNoteAsync_Should_Call_AddAsync_OnRepository()
         {
-            // Arrange: Create a sample NoteDto.
+            // Arrange
             var noteDto = new NoteDto
             {
                 Id = Guid.NewGuid(),
@@ -33,10 +33,10 @@ namespace BlogNotes.Tests.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            // Act: Call the CreateNoteAsync method.
+            // Act
             await _service.CreateNoteAsync(noteDto);
 
-            // Assert: Verify that AddAsync was called once with a Note matching the noteDto.
+            // Assert
             await _repository.Received(1).AddAsync(
                 Arg.Is<Note>(n =>
                     n.Id == noteDto.Id &&
@@ -48,7 +48,7 @@ namespace BlogNotes.Tests.Services
         [Test]
         public async Task GetAllNotesAsync_Should_Return_ListOfNoteDtos()
         {
-            // Arrange: Prepare a list of Notes.
+            // Arrange
             var notes = new List<Note>
             {
                 new Note { Id = Guid.NewGuid(), Title = "Note 1", Content = "Content 1", CreatedAt = DateTime.UtcNow },
@@ -57,10 +57,10 @@ namespace BlogNotes.Tests.Services
 
             _repository.GetAllAsync().Returns(notes);
 
-            // Act: Call the GetAllNotesAsync method.
+            // Act
             var result = await _service.GetAllNotesAsync();
 
-            // Assert: Verify that the correct number of DTOs is returned and that they contain the expected IDs.
+            // Assert
             var resultList = result.ToList();
             Assert.That(resultList.Count, Is.EqualTo(notes.Count));
             foreach (var note in notes)
@@ -72,7 +72,7 @@ namespace BlogNotes.Tests.Services
         [Test]
         public async Task GetNoteByIdAsync_Should_Return_Correct_NoteDto()
         {
-            // Arrange: Prepare a sample note.
+            // Arrange
             var note = new Note
             {
                 Id = Guid.NewGuid(),
@@ -83,10 +83,10 @@ namespace BlogNotes.Tests.Services
 
             _repository.GetByIdAsync(note.Id).Returns(note);
 
-            // Act: Call the GetNoteByIdAsync method.
+            // Act
             var result = await _service.GetNoteByIdAsync(note.Id);
 
-            // Assert: Verify that the NoteDto is returned with the correct values.
+            // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Id, Is.EqualTo(note.Id));
             Assert.That(result.Title, Is.EqualTo(note.Title));
@@ -96,7 +96,7 @@ namespace BlogNotes.Tests.Services
         [Test]
         public async Task UpdateNoteAsync_Should_Call_UpdateAsync_OnRepository()
         {
-            // Arrange: Prepare a NoteDto.
+            // Arrange
             var noteDto = new NoteDto
             {
                 Id = Guid.NewGuid(),
@@ -105,10 +105,10 @@ namespace BlogNotes.Tests.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            // Act: Call the UpdateNoteAsync method.
+            // Act
             await _service.UpdateNoteAsync(noteDto);
 
-            // Assert: Verify that UpdateAsync was called with a Note matching the NoteDto.
+            // Assert
             await _repository.Received(1).UpdateAsync(
                 Arg.Is<Note>(n =>
                     n.Id == noteDto.Id &&
@@ -119,13 +119,13 @@ namespace BlogNotes.Tests.Services
         [Test]
         public async Task DeleteNoteAsync_Should_Call_DeleteAsync_OnRepository()
         {
-            // Arrange: Define a note ID.
+            // Arrange
             var noteId = Guid.NewGuid();
 
-            // Act: Call the DeleteNoteAsync method.
+            // Act
             await _service.DeleteNoteAsync(noteId);
 
-            // Assert: Verify that DeleteAsync was called with the correct ID.
+            // Assert
             await _repository.Received(1).DeleteAsync(noteId);
         }
     }
