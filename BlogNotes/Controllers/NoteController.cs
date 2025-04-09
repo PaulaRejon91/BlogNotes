@@ -79,15 +79,12 @@ public class NoteController : ControllerBase
             }
             else
             {
-                _logger.LogInformation("Received request to create a new note with temporary id {NoteId}.", noteDto.Id);
                 await _noteService.CreateNoteAsync(noteDto);
-                _logger.LogInformation("Successfully created note with id {NoteId}.", noteDto.Id);
-                result = CreatedAtAction(nameof(GetNoteById), new { id = noteDto.Id }, noteDto);
+                result = Accepted();
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Controller Error: Failed to create note with id {NoteId}.", noteDto?.Id);
             result = StatusCode(500, "An internal server error occurred while processing your request.");
         }
         return result;
